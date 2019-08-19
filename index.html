@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="home">
+<head>
+          <!-- Basic Mobile Specific Meta -->
+          <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+          <!-- Favicon-->
+          <link rel="shortcut icon" href="./lib/favicon/favicon.ico">
+          <!-- Author Meta -->
+          <meta name="author" content="imed jaberi">
+          <!-- meta character set -->
+          <meta charset="UTF-8">
+          <!-- Basic Web Specific Meta -->
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <meta http-equiv="X-UA-Compatible" content="ie=edge">
+          
+          <!-- Site Title -->
+          <title> Angular JS Notepad ! </title>
+          
+          <!-- Angular JS 1.6.9 -->
+          <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+          <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular-route.min.js"></script>
+           
+          <!-- my styles -->
+          <style> 
+
+           body {
+             background-color: #353535;
+             text-align: center; 
+           }
+
+           button {
+             background-color: rgba(2, 79, 105, 0.479); 
+             border: none;
+             color: white;
+             padding: 15px 32px;
+             text-align: center;
+             text-decoration: none;
+             display: inline-block;
+             font-size: 16px;
+             border: 0.5px solid rgba(255, 255, 255, 0.507);
+             margin-top: 20px;
+           }
+
+           textarea {
+             background-color: #f44336e3;
+             color: white;
+             font-size: 20px;
+             border: 5px solid white;
+             border-radius: 10px;
+             font-size: 21px;
+           }
+
+           h1 {
+             font-size: 7.5rem;
+             color: rgba(202, 202, 202, 0.904);
+           }
+           
+          </style>
+ 
+</head>
+<body>
+
+          <ng-view></ng-view>
+ 
+          <!-- my scripts -->
+          <script> 
+           let app = angular.module("home",["ngRoute"]) ; 
+
+           // routing ..
+              app.config(
+                 $routeProvider => $routeProvider
+                    .when("/", {
+                      template : `
+                              <div ng-controller="myNoteCtrl">
+                                 <textarea ng-model="message" cols={{cols}} rows={{rows}}></textarea>
+                                 <br/>
+                                 <button ng-click="save()">Save</button>
+                                 <button ng-click="clear()">Clear</button>
+                              </div>
+                              `})
+                    .otherwise({ template : "<h1> Page NotFound 😵 ! </h1>" })
+              )
+           // controller .. 
+              app.controller(
+                "myNoteCtrl",
+                $scope => {
+                 // initial state .. 
+                    $scope.message = "";
+                    $scope.cols = 80 ;
+                    $scope.rows = 20 ;
+                    $scope.fileName = "note.txt" ; 
+                 // core funcs ..   
+                    $scope.left = () => 100 - $scope.message.length;
+                    $scope.clear = () => $scope.message = "";
+                    $scope.save = () => {
+                       if ($scope.message === "") {
+                          alert('isEmpty 🤯!')
+                       }else{
+                          let file = new Blob([$scope.message], {type: 'text/plain'});
+                          let atag = document.createElement("a");
+                          atag.href = URL.createObjectURL(file);
+                          atag.download = $scope.fileName;
+                          atag.click();
+                       }
+                    };
+                    
+                }
+            );    
+
+          </script>
+ </body>
+ </html>
